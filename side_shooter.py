@@ -33,13 +33,8 @@ class SideShooter:
 			#Update ship's position.
 			self.ship.update()
 
-			#Update the bullets' position.
-			self.bullets.update()
-
-			#Get rid of the bullets that have disappeared.
-			for bullet in self.bullets.copy():
-				if bullet.rect.right>= self.settings.screen_width:
-					self.bullets.remove(bullet)
+			#Update bullets.
+			self._update_bullets()
 			
 			#Redraw the screen during each pass through the loop.
 			self._update_screen()
@@ -78,6 +73,15 @@ class SideShooter:
 		if len(self.bullets) < self.settings.bullets_allowed:
 			new_bullet = Bullet(self)
 			self.bullets.add(new_bullet)
+
+	def _update_bullets(self):
+		"""Update position of bullets and get rid of old bullets."""
+		self.bullets.update()
+
+		#Get rid of the bullets that have disappeared.
+		for bullet in self.bullets.copy():
+			if bullet.rect.right>= self.settings.screen_width:
+				self.bullets.remove(bullet)
 
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
