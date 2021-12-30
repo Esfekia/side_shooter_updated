@@ -10,7 +10,7 @@ class SideShooter:
 		"""Initialize the game and create game resources."""
 
 		pygame.init()
-
+		self.bg = pygame.image.load("images/space.bmp")
 		self.settings = Settings()
 
 		self.screen = pygame.display.set_mode(
@@ -63,6 +63,8 @@ class SideShooter:
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
 		self.screen.fill(self.settings.bg_color)
+		#Add background picture.
+		self.screen.blit(self.bg, (0, 0))
 		self.ship.blitme()
 
 		#Make the most recently drawn screen visible.
