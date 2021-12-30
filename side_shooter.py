@@ -36,6 +36,11 @@ class SideShooter:
 			#Update the bullets' position.
 			self.bullets.update()
 
+			#Get rid of the bullets that have disappeared.
+			for bullet in self.bullets.copy():
+				if bullet.rect.right>= self.settings.screen_width:
+					self.bullets.remove(bullet)
+			
 			#Redraw the screen during each pass through the loop.
 			self._update_screen()
 
