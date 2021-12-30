@@ -3,6 +3,9 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from alien import Alien
+
+from random import random
 
 class SideShooter:
 	"""Overall class to manage game assets and behavior."""
@@ -23,6 +26,7 @@ class SideShooter:
 
 		self.ship = Ship(self)
 		self.bullets = pygame.sprite.Group()
+		self.aliens = pygame.sprite.Group()
 
 	def run_game(self):
 		"""Start the main loop for the game."""
@@ -30,11 +34,17 @@ class SideShooter:
 			#Watch for keyboard and mouse events.
 			self._check_events()
 
+			#Consider creating a new alien.
+			self._create_alien()
+			
 			#Update ship's position.
 			self.ship.update()
 
 			#Update bullets.
 			self._update_bullets()
+
+			#Update aliens group
+			self.aliens.update()
 			
 			#Redraw the screen during each pass through the loop.
 			self._update_screen()
@@ -83,6 +93,21 @@ class SideShooter:
 			if bullet.rect.right>= self.settings.screen_width:
 				self.bullets.remove(bullet)
 
+		#Check for collisions.
+		self._check_bullet_alien_collisions()
+
+	def _check_bullet_alien_collisions(self):
+		"""Check whether any bullets have hit an alien."""
+		collisions =pygame.sprite.groupcollide(
+			self.bullets, self.aliens, True, True)
+
+	def _create_alien(self):
+		"""Create an alien, if conditions are right."""
+		if random() < self.settings.alien_frequency:
+			alien = Alien(self)
+			self.aliens.add(alien)
+			print(len(self.aliens))
+
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
 		self.screen.fill(self.settings.bg_color)
@@ -94,6 +119,8 @@ class SideShooter:
 		for bullet in self.bullets.sprites():
 			bullet.draw_bullet()
 
+		self.aliens.draw(self.screen)
+		
 		#Make the most recently drawn screen visible.
 		pygame.display.flip()
 
