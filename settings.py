@@ -10,10 +10,11 @@ class Settings:
 		self.bg_color = (51,255,251)
 
 		#Ship settings
-		self.ship_speed = 1.5
+		self.ship_speed = 2
+		self.ship_limit = 3
 
 		#Bullet settings
-		self.bullet_speed = 1.0
+		self.bullet_speed = 1.5
 		self.bullet_width = 15
 		self.bullet_height =3
 		self.bullet_color = (224,231,34)
@@ -22,6 +23,6 @@ class Settings:
 		#Alien settings
 		#  alien_frequency controls how often a new alien appear.s
 		#    Higher values -> more frequent aliens. Max = 1.0.
-		self.alien_frequency = 0.0008
-		self.alien_speed = 1.0
+		self.alien_frequency = 0.0016
+		self.alien_speed = 1.5
 		

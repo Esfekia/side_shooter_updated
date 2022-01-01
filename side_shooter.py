@@ -4,7 +4,9 @@ from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from game_stats import GameStats
 
+from time import sleep
 from random import random
 
 class SideShooter:
@@ -24,6 +26,8 @@ class SideShooter:
 
 		pygame.display.set_caption ("Sideways Shooter!")
 
+		#Create an instance to store game statistics.
+		self.stats = GameStats(self)
 		self.ship = Ship(self)
 		self.bullets = pygame.sprite.Group()
 		self.aliens = pygame.sprite.Group()
@@ -45,6 +49,10 @@ class SideShooter:
 
 			#Update aliens group
 			self.aliens.update()
+
+			#Look for alien-ship collisions.
+			if pygame.sprite.spritecollideany(self.ship,self.aliens):
+				self._ship_hit()
 			
 			#Redraw the screen during each pass through the loop.
 			self._update_screen()
@@ -95,6 +103,24 @@ class SideShooter:
 
 		#Check for collisions.
 		self._check_bullet_alien_collisions()
+
+	def _ship_hit(self):
+		"""Respond to the ship being hit by an alien."""
+
+		#Decrement ships_eft.
+		self.stats.ships_left -= 1
+
+		#Get rid of any remaining aliens and bullets.
+		self.aliens.empty()
+		self.bullets.empty()
+
+		#Create a new alien and center the ship.
+		self._create_alien()
+		self.ship.center_ship()
+
+		#Pause.
+		sleep(1)
+
 
 	def _check_bullet_alien_collisions(self):
 		"""Check whether any bullets have hit an alien."""
