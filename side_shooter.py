@@ -38,21 +38,23 @@ class SideShooter:
 			#Watch for keyboard and mouse events.
 			self._check_events()
 
-			#Consider creating a new alien.
-			self._create_alien()
+			if self.stats.game_active:
+
+				#Consider creating a new alien.
+				self._create_alien()
 			
-			#Update ship's position.
-			self.ship.update()
+				#Update ship's position.
+				self.ship.update()
 
-			#Update bullets.
-			self._update_bullets()
+				#Update bullets.
+				self._update_bullets()
 
-			#Update aliens group
-			self.aliens.update()
+				#Update aliens group
+				self.aliens.update()
 
-			#Look for alien-ship collisions.
-			if pygame.sprite.spritecollideany(self.ship,self.aliens):
-				self._ship_hit()
+				#Look for alien-ship collisions.
+				if pygame.sprite.spritecollideany(self.ship,self.aliens):
+					self._ship_hit()
 			
 			#Redraw the screen during each pass through the loop.
 			self._update_screen()
@@ -107,20 +109,23 @@ class SideShooter:
 	def _ship_hit(self):
 		"""Respond to the ship being hit by an alien."""
 
-		#Decrement ships_eft.
-		self.stats.ships_left -= 1
+		if self.stats.ships_left > 0 :
+			#Decrement ships_eft.
+			self.stats.ships_left -= 1
 
-		#Get rid of any remaining aliens and bullets.
-		self.aliens.empty()
-		self.bullets.empty()
+			#Get rid of any remaining aliens and bullets.
+			self.aliens.empty()
+			self.bullets.empty()
 
-		#Create a new alien and center the ship.
-		self._create_alien()
-		self.ship.center_ship()
+			#Create a new alien and center the ship.
+			self._create_alien()
+			self.ship.center_ship()
 
-		#Pause.
-		sleep(1)
+			#Pause.
+			sleep(1)
 
+		else:
+			self.stats.game_active = False
 
 	def _check_bullet_alien_collisions(self):
 		"""Check whether any bullets have hit an alien."""
@@ -132,7 +137,7 @@ class SideShooter:
 		if random() < self.settings.alien_frequency:
 			alien = Alien(self)
 			self.aliens.add(alien)
-			print(len(self.aliens))
+			###print(len(self.aliens)) <= no longer needed.
 
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
