@@ -4,6 +4,7 @@ from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from playbutton import PlayButton
 from game_stats import GameStats
 from pygame.locals import *
 from time import sleep
@@ -28,6 +29,7 @@ class SideShooter:
 		#Create an instance to store game statistics.
 		self.stats = GameStats(self)
 		self.ship = Ship(self)
+		self.playbutton = PlayButton(self)
 		self.bullets = pygame.sprite.Group()
 		self.aliens = pygame.sprite.Group()
 
@@ -38,6 +40,7 @@ class SideShooter:
 			#Watch for keyboard and mouse events.
 			self._check_events()
 
+			#Check if the game is still active first!
 			if self.stats.game_active:
 
 				#Loop the background.
@@ -64,8 +67,8 @@ class SideShooter:
 
 	def _loop_bg(self):
 		"""Create a scrolling background event"""
-		self.settings.bgX -= 1.4  # Move both background images back
-		self.settings.bgX2 -= 1.4
+		self.settings.bgX -= 0.1  # Move both background images back
+		self.settings.bgX2 -= 0.1
 
 		if self.settings.bgX < self.settings.screen_width * -1:  # If our bg is at the -width then reset its position
 			self.settings.bgX = self.settings.screen_width
@@ -166,6 +169,7 @@ class SideShooter:
 			bullet.draw_bullet()
 
 		self.aliens.draw(self.screen)
+		self.playbutton.blitme()
 		
 		#Make the most recently drawn screen visible.
 		pygame.display.flip()

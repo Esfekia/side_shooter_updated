@@ -12,7 +12,7 @@ class Settings:
 		#Background Scroll Settings:
 		self.bgX = 0
 		self.bgX2 = self.screen_width
-		self.bg_speed = 30
+		#self.bg_speed = 0.1
 
 		#Ship settings
 		self.ship_speed = 2
