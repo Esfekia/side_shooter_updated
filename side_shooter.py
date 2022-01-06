@@ -1,11 +1,15 @@
 import sys
 import pygame
+
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from playbutton import PlayButton
 from game_stats import GameStats
+from scoreboard import Scoreboard
 
+from pygame.locals import *
 from time import sleep
 from random import random
 
@@ -14,11 +18,11 @@ class SideShooter:
 
 	def __init__(self):
 		"""Initialize the game and create game resources."""
-
 		pygame.init()
+
 		self.bg = pygame.image.load("images/space.bmp")
 		self.settings = Settings()
-
+		
 		self.screen = pygame.display.set_mode(
 			(self.settings.screen_width, self.settings.screen_height))
 		self.settings.screen_width = self.screen.get_rect().width
@@ -28,16 +32,23 @@ class SideShooter:
 
 		#Create an instance to store game statistics.
 		self.stats = GameStats(self)
+		self.sb = Scoreboard(self)
 		self.ship = Ship(self)
+		self.playbutton = PlayButton(self)
 		self.bullets = pygame.sprite.Group()
 		self.aliens = pygame.sprite.Group()
 
 	def run_game(self):
 		"""Start the main loop for the game."""
 		while True:
+			
+			#Loop the background.
+			self._loop_bg()
+
 			#Watch for keyboard and mouse events.
 			self._check_events()
 
+			#Check if the game is still active first!
 			if self.stats.game_active:
 
 				#Consider creating a new alien.
@@ -59,6 +70,16 @@ class SideShooter:
 			#Redraw the screen during each pass through the loop.
 			self._update_screen()
 
+	def _loop_bg(self):
+		"""Create a scrolling background event"""
+		self.settings.bgX -= 0.1  # Move both background images back
+		self.settings.bgX2 -= 0.1
+
+		if self.settings.bgX < self.settings.screen_width * -1:  # If our bg is at the -width then reset its position
+			self.settings.bgX = self.settings.screen_width
+		if self.settings.bgX2 < self.settings.screen_width * -1:
+			self.settings.bgX2 = self.settings.screen_width
+
 	def _check_events(self):
 		"""Respond to key presses and mouse events"""
 		for event in pygame.event.get():
@@ -68,6 +89,23 @@ class SideShooter:
 				self._check_keydown_events(event)
 			elif event.type == pygame.KEYUP:
 				self._check_keyup_events(event)
+			elif event.type == pygame.MOUSEBUTTONDOWN:
+				mouse_pos = pygame.mouse.get_pos()
+				self._check_play_button(mouse_pos)
+
+	def _check_play_button(self,mouse_pos):
+		"""Start a new game when the player clicks Play"""
+		button_clicked = self.playbutton.rect.collidepoint(mouse_pos)
+		if button_clicked and not self.stats.game_active:
+			self.start_game()
+
+	def start_game(self):
+		#Reset the game statistics and set active flag
+		self.stats.reset_stats()
+		self.stats.game_active =True
+
+		#Hide the mouse cursor
+		pygame.mouse.set_visible(False)
 
 	def _check_keydown_events(self,event):
 		"""Respond to key presses."""
@@ -77,6 +115,8 @@ class SideShooter:
 			self.ship.moving_down = True
 		elif event.key == pygame.K_q:
 			sys.exit()
+		elif event.key == pygame.K_p and not self.stats.game_active:	
+			self.start_game()
 		elif event.key == pygame.K_SPACE:
 			self._fire_bullet()
 
@@ -143,14 +183,26 @@ class SideShooter:
 		"""Update images on the screen and flip to the new screen."""
 		self.screen.fill(self.settings.bg_color)
 		
-		#Add background picture.
-		self.screen.blit(self.bg, (0, 0))
+		#Add background picture
+		self.screen.blit(self.bg, (self.settings.bgX, 0))  # draws our first bg image
+		self.screen.blit(self.bg, (self.settings.bgX2, 0))  # draws the seconf bg image
 		
+		#Add ship picture
 		self.ship.blitme()
+
+		#Draw the bullets
 		for bullet in self.bullets.sprites():
 			bullet.draw_bullet()
 
+		#Draw the aliens
 		self.aliens.draw(self.screen)
+		
+		#Draw the scoreinformation
+		self.sb.show_score()
+
+		#Draw the play button if the game is inactive.
+		if not self.stats.game_active:
+			self.playbutton.blitme()
 		
 		#Make the most recently drawn screen visible.
 		pygame.display.flip()

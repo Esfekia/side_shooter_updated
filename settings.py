@@ -7,7 +7,7 @@ class Settings:
 		# Screen settings
 		self.screen_width = 1200
 		self.screen_height = 800
-		self.bg_color = (51,255,251)
+		self.bg_color = (6,18,33)
 
 		#Background Scroll Settings:
 		self.bgX = 0
