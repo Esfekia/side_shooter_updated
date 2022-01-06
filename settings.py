@@ -9,6 +9,11 @@ class Settings:
 		self.screen_height = 800
 		self.bg_color = (51,255,251)
 
+		#Background Scroll Settings:
+		self.bgX = 0
+		self.bgX2 = self.screen_width
+		self.bg_speed = 30
+
 		#Ship settings
 		self.ship_speed = 2
 		self.ship_limit = 3
@@ -24,5 +29,5 @@ class Settings:
 		#  alien_frequency controls how often a new alien appear.s
 		#    Higher values -> more frequent aliens. Max = 1.0.
 		self.alien_frequency = 0.0016
-		self.alien_speed = 1.5
+		self.alien_speed = 1.0
 		

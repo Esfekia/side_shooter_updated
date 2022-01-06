@@ -5,7 +5,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
-
+from pygame.locals import *
 from time import sleep
 from random import random
 
@@ -18,7 +18,6 @@ class SideShooter:
 		pygame.init()
 		self.bg = pygame.image.load("images/space.bmp")
 		self.settings = Settings()
-
 		self.screen = pygame.display.set_mode(
 			(self.settings.screen_width, self.settings.screen_height))
 		self.settings.screen_width = self.screen.get_rect().width
@@ -35,10 +34,14 @@ class SideShooter:
 	def run_game(self):
 		"""Start the main loop for the game."""
 		while True:
+			
 			#Watch for keyboard and mouse events.
 			self._check_events()
 
 			if self.stats.game_active:
+
+				#Loop the background.
+				self._loop_bg()
 
 				#Consider creating a new alien.
 				self._create_alien()
@@ -58,6 +61,16 @@ class SideShooter:
 			
 			#Redraw the screen during each pass through the loop.
 			self._update_screen()
+
+	def _loop_bg(self):
+		"""Create a scrolling background event"""
+		self.settings.bgX -= 1.4  # Move both background images back
+		self.settings.bgX2 -= 1.4
+
+		if self.settings.bgX < self.settings.screen_width * -1:  # If our bg is at the -width then reset its position
+			self.settings.bgX = self.settings.screen_width
+		if self.settings.bgX2 < self.settings.screen_width * -1:
+			self.settings.bgX2 = self.settings.screen_width
 
 	def _check_events(self):
 		"""Respond to key presses and mouse events"""
@@ -144,8 +157,10 @@ class SideShooter:
 		self.screen.fill(self.settings.bg_color)
 		
 		#Add background picture.
-		self.screen.blit(self.bg, (0, 0))
-		
+		#self.screen.blit(self.bg, (0, 0))
+		self.screen.blit(self.bg, (self.settings.bgX, 0))  # draws our first bg image
+		self.screen.blit(self.bg, (self.settings.bgX2, 0))  # draws the seconf bg image
+
 		self.ship.blitme()
 		for bullet in self.bullets.sprites():
 			bullet.draw_bullet()
