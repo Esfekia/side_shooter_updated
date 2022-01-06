@@ -15,8 +15,8 @@ class SideShooter:
 
 	def __init__(self):
 		"""Initialize the game and create game resources."""
-
 		pygame.init()
+
 		self.bg = pygame.image.load("images/space.bmp")
 		self.settings = Settings()
 		self.screen = pygame.display.set_mode(
@@ -37,14 +37,14 @@ class SideShooter:
 		"""Start the main loop for the game."""
 		while True:
 			
+			#Loop the background.
+			self._loop_bg()
+
 			#Watch for keyboard and mouse events.
 			self._check_events()
 
 			#Check if the game is still active first!
 			if self.stats.game_active:
-
-				#Loop the background.
-				self._loop_bg()
 
 				#Consider creating a new alien.
 				self._create_alien()
@@ -84,6 +84,23 @@ class SideShooter:
 				self._check_keydown_events(event)
 			elif event.type == pygame.KEYUP:
 				self._check_keyup_events(event)
+			elif event.type == pygame.MOUSEBUTTONDOWN:
+				mouse_pos = pygame.mouse.get_pos()
+				self._check_play_button(mouse_pos)
+
+	def _check_play_button(self,mouse_pos):
+		"""Start a new game when the player clicks Play"""
+		button_clicked = self.playbutton.rect.collidepoint(mouse_pos)
+		if button_clicked and not self.stats.game_active:
+			self.start_game()
+
+	def start_game(self):
+		#Reset the game statistics and set active flag
+		self.stats.reset_stats()
+		self.stats.game_active =True
+
+		#Hide the mouse cursor
+		pygame.mouse.set_visible(False)
 
 	def _check_keydown_events(self,event):
 		"""Respond to key presses."""
@@ -93,6 +110,8 @@ class SideShooter:
 			self.ship.moving_down = True
 		elif event.key == pygame.K_q:
 			sys.exit()
+		elif event.key == pygame.K_p and not self.stats.game_active:	
+			self.start_game()
 		elif event.key == pygame.K_SPACE:
 			self._fire_bullet()
 
@@ -169,7 +188,10 @@ class SideShooter:
 			bullet.draw_bullet()
 
 		self.aliens.draw(self.screen)
-		self.playbutton.blitme()
+		
+		#Draw the play button if the game is inactive.
+		if not self.stats.game_active:
+			self.playbutton.blitme()
 		
 		#Make the most recently drawn screen visible.
 		pygame.display.flip()
