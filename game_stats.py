@@ -3,6 +3,8 @@ class GameStats:
 	
 	def __init__(self, ss_game):
 		"""Initialize statistics."""
+		with open('high_score.txt') as file_object:
+			self.high_score = int(file_object.read())
 		self.settings = ss_game.settings
 		self.reset_stats()
 

@@ -165,12 +165,23 @@ class SideShooter:
 			sleep(2)
 
 		else:
+			filename = 'high_score.txt'
+			with open(filename, 'w') as file_object:
+				file_object.write(str(self.stats.high_score))
+			self.stats.reset_stats()	
 			self.stats.game_active = False
+			pygame.mouse.set_visible(True)
 
 	def _check_bullet_alien_collisions(self):
 		"""Check whether any bullets have hit an alien."""
 		collisions =pygame.sprite.groupcollide(
 			self.bullets, self.aliens, True, True)
+
+		if collisions:
+			for aliens in collisions.values():
+				self.stats.score += self.settings.alien_points * len(aliens)
+			self.sb.prep_score()
+			self.sb.check_high_score()
 
 	def _create_alien(self):
 		"""Create an alien, if conditions are right."""

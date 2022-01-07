@@ -14,10 +14,6 @@ class Settings:
 		self.bgX2 = self.screen_width
 		#self.bg_speed = 0.1
 
-		#Ship settings
-		self.ship_speed = 2
-		self.ship_limit = 3
-
 		#Bullet settings
 		self.bullet_speed = 1.5
 		self.bullet_width = 15
@@ -30,4 +26,18 @@ class Settings:
 		#    Higher values -> more frequent aliens. Max = 1.0.
 		self.alien_frequency = 0.0016
 		self.alien_speed = 1.0
+	
+		self.initialize_dynamic_settings()
 		
+	def initialize_dynamic_settings(self):
+		"""Initialize settings that change throughout the game."""
+
+		#Ship settings
+		self.ship_speed = 2
+		self.ship_limit = 3
+
+		#Bullet settings
+		self.bullet_speed = 1.5
+
+		#Scoring
+		self.alien_points = 50
