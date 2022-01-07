@@ -8,6 +8,7 @@ from alien import Alien
 from playbutton import PlayButton
 from game_stats import GameStats
 from scoreboard import Scoreboard
+from explosion import Explosion
 
 from pygame.locals import *
 from time import sleep
@@ -34,6 +35,7 @@ class SideShooter:
 		self.stats = GameStats(self)
 		self.sb = Scoreboard(self)
 		self.ship = Ship(self)
+		self.explosion = Explosion(self)
 		self.playbutton = PlayButton(self)
 		self.bullets = pygame.sprite.Group()
 		self.aliens = pygame.sprite.Group()
@@ -193,13 +195,16 @@ class SideShooter:
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
 		self.screen.fill(self.settings.bg_color)
-		
+
 		#Add background picture
 		self.screen.blit(self.bg, (self.settings.bgX, 0))  # draws our first bg image
 		self.screen.blit(self.bg, (self.settings.bgX2, 0))  # draws the seconf bg image
 		
 		#Add ship picture
 		self.ship.blitme()
+
+		#Draw the explosion
+		self.explosion.blitme()
 
 		#Draw the bullets
 		for bullet in self.bullets.sprites():
