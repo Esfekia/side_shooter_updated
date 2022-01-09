@@ -73,7 +73,7 @@ class SideShooter:
 				if pygame.sprite.spritecollideany(self.ship,self.aliens):
 					self._ship_hit()
 					
-
+				
 			#Redraw the screen during each pass through the loop.
 			self._update_screen()
 
@@ -169,9 +169,7 @@ class SideShooter:
 			#Create a new alien and center the ship.
 			self._create_alien()
 			self.ship.center_ship()
-			
-
-			
+	
 			#Pause.
 			sleep(2)
 
@@ -189,7 +187,7 @@ class SideShooter:
 			self.bullets, self.aliens, True, True)
 
 		if collisions:
-
+			
 			for aliens in collisions.values():
 				self.stats.score += self.settings.alien_points * len(aliens)
 			self.sb.prep_score()
