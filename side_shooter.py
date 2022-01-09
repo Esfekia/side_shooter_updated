@@ -39,6 +39,7 @@ class SideShooter:
 		self.playbutton = PlayButton(self)
 		self.bullets = pygame.sprite.Group()
 		self.aliens = pygame.sprite.Group()
+		self.explosions = pygame.sprite.Group()
 
 	def run_game(self):
 		"""Start the main loop for the game."""
@@ -55,7 +56,7 @@ class SideShooter:
 
 				#Consider creating a new alien.
 				self._create_alien()
-			
+
 				#Update ship's position.
 				self.ship.update()
 
@@ -65,10 +66,14 @@ class SideShooter:
 				#Update aliens group
 				self.aliens.update()
 
+				#Update explosions group
+				self.explosions.update()
+
 				#Look for alien-ship collisions.
 				if pygame.sprite.spritecollideany(self.ship,self.aliens):
 					self._ship_hit()
-			
+					
+
 			#Redraw the screen during each pass through the loop.
 			self._update_screen()
 
@@ -150,11 +155,12 @@ class SideShooter:
 
 	def _ship_hit(self):
 		"""Respond to the ship being hit by an alien."""
-
+		self._create_explosion()
+		self._update_screen()
 		if self.stats.ships_left > 0 :
 			#Decrement ships_eft.
 			self.stats.ships_left -= 1
-
+			
 			#Get rid of any remaining aliens and bullets.
 			self.aliens.empty()
 			self.bullets.empty()
@@ -162,7 +168,9 @@ class SideShooter:
 			#Create a new alien and center the ship.
 			self._create_alien()
 			self.ship.center_ship()
+			
 
+			
 			#Pause.
 			sleep(2)
 
@@ -180,10 +188,12 @@ class SideShooter:
 			self.bullets, self.aliens, True, True)
 
 		if collisions:
+
 			for aliens in collisions.values():
 				self.stats.score += self.settings.alien_points * len(aliens)
 			self.sb.prep_score()
 			self.sb.check_high_score()
+			
 
 	def _create_alien(self):
 		"""Create an alien, if conditions are right."""
@@ -192,19 +202,23 @@ class SideShooter:
 			self.aliens.add(alien)
 			###print(len(self.aliens)) <= no longer needed.
 
+	def _create_explosion(self):
+		explosion = Explosion(self)
+		self.explosions.add(explosion) 
+
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
 		self.screen.fill(self.settings.bg_color)
 
 		#Add background picture
 		self.screen.blit(self.bg, (self.settings.bgX, 0))  # draws our first bg image
-		self.screen.blit(self.bg, (self.settings.bgX2, 0))  # draws the seconf bg image
-		
+		self.screen.blit(self.bg, (self.settings.bgX2, 0))  # draws the second bg image
+						
 		#Add ship picture
 		self.ship.blitme()
-
+				
 		#Draw the explosion
-		self.explosion.blitme()
+		self.explosions.draw(self.screen)
 
 		#Draw the bullets
 		for bullet in self.bullets.sprites():

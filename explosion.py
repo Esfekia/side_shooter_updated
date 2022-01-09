@@ -12,16 +12,15 @@ class Explosion (Sprite):
 		self.screen_rect = ss_game.screen.get_rect()
 		
 		#Load the explosion image and get its rect.
-		self.image = pygame.image.load("images/fire4.png").convert_alpha()
+		self.image = pygame.image.load("images/fire.png")
 		self.rect = self.image.get_rect()
-		self.rect.center = ss_game.ship.rect.center
+		self.rect.center = ss_game.ship.rect.midright
 
 		#Store the explosion's position as a decimal value.
 		self.x = float(self.rect.x)
 		self.y = float(self.rect.y)
 
-	def blitme(self):
+	#def blitme(self):
 		"""Draw the explosion to the screen."""
-		self.screen.blit(self.image, self.rect)
-
+	#	self.screen.blit(self.image, self.rect)
 
