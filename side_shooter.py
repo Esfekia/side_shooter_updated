@@ -157,6 +157,7 @@ class SideShooter:
 		"""Respond to the ship being hit by an alien."""
 		self._create_explosion()
 		self._update_screen()
+		self.explosions.empty()
 		if self.stats.ships_left > 0 :
 			#Decrement ships_eft.
 			self.stats.ships_left -= 1
