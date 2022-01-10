@@ -64,6 +64,7 @@ class SideShooter:
 				self._update_bullets()
 
 				#Update aliens group
+				
 				self.aliens.update()
 
 				#Update explosions group

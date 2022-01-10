@@ -1,3 +1,5 @@
+import random
+
 class Settings:
 	"""A Class to store all settings for Alien Invasion."""
 
@@ -25,15 +27,17 @@ class Settings:
 		#  alien_frequency controls how often a new alien appear.s
 		#    Higher values -> more frequent aliens. Max = 1.0.
 		self.alien_frequency = 0.0016
-		self.alien_speed = 1.0
-	
+		
+		#Randomize ship speed.
+		self.alien_speed = 1 * random.random()
+
 		self.initialize_dynamic_settings()
 		
 	def initialize_dynamic_settings(self):
 		"""Initialize settings that change throughout the game."""
 
 		#Ship settings
-		self.ship_speed = 2
+		self.ship_speed = 1
 		self.ship_limit = 3
 
 		#Bullet settings

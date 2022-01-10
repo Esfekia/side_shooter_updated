@@ -1,6 +1,9 @@
 import pygame
 from pygame.sprite import Sprite
 from random import randint
+from random import choice
+from settings import Settings
+
 
 class Alien(Sprite):
 	"""A class to represent a single alien in the fleet."""
@@ -9,7 +12,7 @@ class Alien(Sprite):
 		"""Initialize the alien and set its starting position."""
 		super().__init__()
 		self.screen = ss_game.screen
-		self.settings = ss_game.settings
+		self.settings = Settings()
 
 		#Load the alien image and set its rect attribute.
 		self.image =pygame.image.load('images/alien.png')
@@ -27,7 +30,8 @@ class Alien(Sprite):
 		self.x = float(self.rect.x)
 		self.y = float(self.rect.y)
 
+
 	def update(self):
 		"""Move the alien steadily to the left."""
-		self.x -= self.settings.alien_speed
+		self.x -= self.settings.alien_speed 
 		self.rect.x = self.x
