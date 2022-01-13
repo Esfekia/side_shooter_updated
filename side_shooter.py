@@ -9,6 +9,7 @@ from playbutton import PlayButton
 from game_stats import GameStats
 from scoreboard import Scoreboard
 from explosion import Explosion
+from alien_bullet import AlienBullet
 
 from pygame.locals import *
 from time import sleep
@@ -35,9 +36,11 @@ class SideShooter:
 		self.stats = GameStats(self)
 		self.sb = Scoreboard(self)
 		self.ship = Ship(self)
+		self.alien = Alien(self)
 		self.explosion = Explosion(self)
 		self.playbutton = PlayButton(self)
 		self.bullets = pygame.sprite.Group()
+		self.alien_bullets = pygame.sprite.Group()
 		self.aliens = pygame.sprite.Group()
 		self.explosions = pygame.sprite.Group()
 
@@ -57,11 +60,17 @@ class SideShooter:
 				#Consider creating a new alien.
 				self._create_alien()
 
+				#Consider creating a new alien bullet.
+				self._create_alien_bullet()
+
 				#Update ship's position.
 				self.ship.update()
 
 				#Update bullets.
 				self._update_bullets()
+
+				#Update alien bullets.
+				self._update_alien_bullets()
 
 				#Update aliens group
 				
@@ -73,7 +82,6 @@ class SideShooter:
 				#Look for alien-ship collisions.
 				if pygame.sprite.spritecollideany(self.ship,self.aliens):
 					self._ship_hit()
-					
 				
 			#Redraw the screen during each pass through the loop.
 			self._update_screen()
@@ -142,6 +150,13 @@ class SideShooter:
 			new_bullet = Bullet(self)
 			self.bullets.add(new_bullet)
 
+	def _fire_alien_bullet(self):
+		"""Create a new alien bullet and add it to the alien_bullets group."""
+		#As long as the number of bullets is less than allowed:
+		if len(self.alien_bullets) < self.settings.alien_bullets_allowed:
+			new_alien_bullet = AlienBullet(self)
+			self.alien_bullets.add(new_alien_bullet)
+
 	def _update_bullets(self):
 		"""Update position of bullets and get rid of old bullets."""
 		self.bullets.update()
@@ -153,6 +168,23 @@ class SideShooter:
 
 		#Check for collisions.
 		self._check_bullet_alien_collisions()
+
+	def _update_alien_bullets(self):
+		"""Update position of alien bullets and get rid of old alien bullets."""
+		self.alien_bullets.update()
+
+		#Get rid of bullets that have disappeared.
+		for alien_bullet in self.alien_bullets.copy():
+			if alien_bullet.rect.left <= 0:
+				self.alien_bullets.remove(alien_bullet)
+
+		#Check for collisions.
+		self._check_bullet_ship_collisions()
+
+	def _check_bullet_ship_collisions(self):
+		#Look for bullet-ship collissions.
+		if pygame.sprite.spritecollideany(self.ship, self.alien_bullets):
+			self._ship_hit()
 
 	def _ship_hit(self):
 		"""Respond to the ship being hit by an alien."""
@@ -193,7 +225,7 @@ class SideShooter:
 				self.stats.score += self.settings.alien_points * len(aliens)
 			self.sb.prep_score()
 			self.sb.check_high_score()
-			
+
 
 	def _create_alien(self):
 		"""Create an alien, if conditions are right."""
@@ -201,6 +233,11 @@ class SideShooter:
 			alien = Alien(self)
 			self.aliens.add(alien)
 			###print(len(self.aliens)) <= no longer needed.
+
+	def _create_alien_bullet(self):
+		"""Create an alien bullet, if conditions are right."""
+		if random() < self.settings.alien_frequency:
+			self._fire_alien_bullet()
 
 	def _create_explosion(self):
 		explosion = Explosion(self)
